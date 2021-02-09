@@ -22,8 +22,28 @@ env:
     - CONFIG=c90
     - CONFIG=stackprotect
     - CONFIG=disable-nls
+    - CONFIG=normal
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
+    - CONFIG=c90
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
+    - CONFIG=stackprotect
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
+    - CONFIG=disable-nls
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
   global:
     - MAKEFLAGS='-j 2'
+    - MAKEFLAGS='-j 2'
+      arch: arm64-graviton2
+      virt: lxd
+      group: edge
 
 compiler:
   - clang
@@ -31,7 +51,6 @@ compiler:
 
 os:
   - linux
-  - osx
 
 matrix:
   include:
@@ -60,129 +79,60 @@ matrix:
         packages:
           - autopoint
           - clang-6.0
-  - env: CONFIG=clang8 DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: clang
-    addons:
-      apt:
-        sources:
-          - llvm-toolchain-trusty-8
-        packages:
-          - autopoint
-          - clang-8
-  - env: CONFIG=clang9 DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: clang
-    addons:
-      apt:
-        sources:
-          sourceline:
-            - deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main
-          key_url:
-            - https://apt.llvm.org/llvm-snapshot.gpg.key
-        packages:
-          - autopoint
-          - clang-9
-  - env: CONFIG=clang10 DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: clang
-    addons:
-      apt:
-        sources:
-          sourceline:
-            - deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main
-          key_url:
-            - https://apt.llvm.org/llvm-snapshot.gpg.key
-        packages:
-          - autopoint
-          - clang-10
-  - env: CONFIG=gcc8 DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        sources:
-          sourceline:
-            - ppa:ubuntu-toolchain-r/test
-        packages:
-          - autopoint
-          - g++-8
-  - env: CONFIG=gcc9 DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        sources:
-          sourceline:
-            - ppa:ubuntu-toolchain-r/test
-        packages:
-          - autopoint
-          - g++-9
-  - env: CONFIG=arm-cross DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-          - autopoint
-          - gcc-4.8-arm-linux-gnueabihf
-          - libc6-dev-armhf-cross
-  - env: CONFIG=musl DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-          - autopoint
-          - musl-tools
-  - env: CONFIG=sanitize DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: clang
-    addons:
-      apt:
-        sources:
-          sourceline:
-            - deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-10 main
-          key_url:
-            - https://apt.llvm.org/llvm-snapshot.gpg.key
-        packages:
-          - autopoint
-          - clang-10
-          - libtool
-    # Required for -fsanitize=undefined
-    # see https://github.com/travis-ci/travis-ci/issues/9033
-    sudo: required
-  - env: CONFIG=coverage DIST=xenial
-    os: linux
-    dist: xenial
-    compiler: gcc
-    addons:
-      apt:
-        packages:
-          - autopoint
-          - libpopt-dev
-          - subversion
-    cache:
-      directories:
-        - $HOME/failmalloc
+
   - env: CONFIG=normal DIST=bionic
-    arch: arm64
+    os: linux
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
+    dist: bionic
+    compiler: gcc
+  - env: CONFIG=normal DIST=bionic
+    os: linux
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
+    dist: bionic
+    compiler: clang
+  - env: CONFIG=normal DIST=focal
+    os: linux
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
+    dist: focal
+    compiler: gcc
+  - env: CONFIG=normal DIST=focal
+    os: linux
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
+    dist: focal
+    compiler: clang
+  - env: CONFIG=clang6 DIST=xenial
+    os: linux
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
+    dist: xenial
+    compiler: clang
+    addons:
+      apt:
+        packages:
+          - autopoint
+          - clang-6.0
+  - env: CONFIG=normal DIST=bionic
+    arch: amd64
     os: linux
     dist: bionic
     compiler: gcc
   - env: CONFIG=normal DIST=bionic
-    arch: ppc64le
+    arch: arm64-graviton2
+    virt: lxd
+    group: edge
     os: linux
     dist: bionic
     compiler: gcc
+
 
 before_install:
   # The apt addons section is ignored on bionic for some reason
